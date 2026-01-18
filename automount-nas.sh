@@ -95,7 +95,10 @@ rotate_log() {
         if [[ ${line_count} -gt ${MAX_LOG_LINES} ]]; then
             tail -n 500 "${LOG_FILE}" > "${LOG_FILE}.tmp"
             mv "${LOG_FILE}.tmp" "${LOG_FILE}"
-            log_message "INFO" "Log rotated (was ${line_count} lines)"
+            # Write directly to log file to avoid recursion
+            local timestamp
+            timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+            echo "[${timestamp}] [INFO] Log rotated (was ${line_count} lines)" >> "${LOG_FILE}"
         fi
     fi
 }
@@ -135,23 +138,23 @@ mount_nas() {
     # Create mount point if it doesn't exist
     if [[ ! -d "${mount_point}" ]]; then
         log_message "INFO" "Creating mount point: ${mount_point}"
-        mkdir -p "${mount_point}" 2>&1 | while read -r line; do log_message "DEBUG" "$line"; done
+        local mkdir_output
+        mkdir_output=$(mkdir -p "${mount_point}" 2>&1)
+        local mkdir_result=$?
         
-        if [[ ! -d "${mount_point}" ]]; then
-            log_message "ERROR" "Failed to create mount point: ${mount_point}"
+        if [[ ${mkdir_result} -ne 0 ]]; then
+            log_message "ERROR" "Failed to create mount point: ${mount_point} - ${mkdir_output}"
             return 1
         fi
     fi
     
     # Build mount command
     local mount_url="${share}"
+    local protocol="${share%%://*}"
+    local path="${share#*://}"
     
     # Add credentials to URL if provided
     if [[ -n "${username}" ]]; then
-        # Extract protocol and path
-        local protocol="${share%%://*}"
-        local path="${share#*://}"
-        
         if [[ -n "${password}" ]]; then
             mount_url="${protocol}://${username}:${password}@${path}"
         else
@@ -159,9 +162,27 @@ mount_nas() {
         fi
     fi
     
-    # Attempt to mount using mount_smbfs
+    # Determine mount type based on protocol
+    local mount_type=""
+    case "${protocol}" in
+        smb)
+            mount_type="smbfs"
+            ;;
+        afp)
+            mount_type="afp"
+            ;;
+        nfs)
+            mount_type="nfs"
+            ;;
+        *)
+            log_message "ERROR" "Unsupported protocol: ${protocol}"
+            return 1
+            ;;
+    esac
+    
+    # Attempt to mount using appropriate mount type
     local mount_output
-    mount_output=$(mount -t smbfs "${mount_url}" "${mount_point}" 2>&1)
+    mount_output=$(mount -t "${mount_type}" "${mount_url}" "${mount_point}" 2>&1)
     local mount_result=$?
     
     if [[ ${mount_result} -eq 0 ]]; then
