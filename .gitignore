@@ -1,0 +1,28 @@
+# User-specific configuration files
+.automount.conf
+*.conf
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# LaunchAgent plist (unless example)
+com.automount.nas.plist
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Test files
+test-*.sh

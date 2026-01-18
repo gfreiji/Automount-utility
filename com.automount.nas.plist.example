@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Unique label for this launch agent -->
+    <key>Label</key>
+    <string>com.automount.nas</string>
+    
+    <!-- Path to the automount script -->
+    <!-- UPDATE THIS PATH to match where you installed automount-nas.sh -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/automount-nas.sh</string>
+    </array>
+    
+    <!-- Run on load (when user logs in) -->
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <!-- Keep the job alive - restart if it exits -->
+    <key>KeepAlive</key>
+    <false/>
+    
+    <!-- Check every 5 minutes (300 seconds) -->
+    <key>StartInterval</key>
+    <integer>300</integer>
+    
+    <!-- Alternative: Run at specific intervals using StartCalendarInterval -->
+    <!-- Uncomment the section below to run at specific times instead of intervals -->
+    <!--
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Minute</key>
+            <integer>15</integer>
+        </dict>
+        <dict>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+        <dict>
+            <key>Minute</key>
+            <integer>45</integer>
+        </dict>
+    </array>
+    -->
+    
+    <!-- Standard output log -->
+    <key>StandardOutPath</key>
+    <string>/tmp/automount-nas.stdout.log</string>
+    
+    <!-- Standard error log -->
+    <key>StandardErrorPath</key>
+    <string>/tmp/automount-nas.stderr.log</string>
+    
+    <!-- Nice level (lower priority, optional) -->
+    <key>Nice</key>
+    <integer>1</integer>
+    
+    <!-- Process type -->
+    <key>ProcessType</key>
+    <string>Background</string>
+    
+    <!-- Working directory -->
+    <key>WorkingDirectory</key>
+    <string>/tmp</string>
+    
+    <!-- Environment variables (optional) -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+    
+</dict>
+</plist>

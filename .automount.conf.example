@@ -1,0 +1,39 @@
+# NAS Automount Configuration File
+# Copy this file to ~/.automount.conf and customize for your setup
+
+# Required: SMB/AFP/NFS share path
+# Examples:
+#   SMB: smb://nas-server/share or smb://192.168.1.100/share
+#   AFP: afp://nas-server/share
+#   NFS: nfs://nas-server/export/path
+NAS_SHARE="smb://your-nas-server/your-share"
+
+# Required: Local mount point where the NAS will be mounted
+# The directory will be created if it doesn't exist
+MOUNT_POINT="/Volumes/NAS"
+
+# Optional: Username for authentication
+# Leave empty if no authentication is required
+NAS_USERNAME="your-username"
+
+# Optional: Password for authentication
+# WARNING: This file contains plain text passwords. Secure it appropriately!
+# Set permissions: chmod 600 ~/.automount.conf
+# Leave empty to be prompted or if no authentication is required
+NAS_PASSWORD="your-password"
+
+# Optional: Log file location
+# Logs mount attempts, successes, and failures
+LOG_FILE="${HOME}/Library/Logs/automount-nas.log"
+
+# Optional: Send notification on successful mount
+# Set to true to receive notifications when NAS is successfully mounted
+NOTIFY_ON_SUCCESS=false
+
+# Optional: Send notification on mount failure
+# Set to true to receive notifications when mount attempts fail
+NOTIFY_ON_FAILURE=true
+
+# Optional: Maximum number of log lines before rotation
+# When log exceeds this size, it will be trimmed to 500 lines
+MAX_LOG_LINES=1000
